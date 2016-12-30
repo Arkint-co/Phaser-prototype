@@ -3,19 +3,33 @@ window.onload = function() {
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update, render: render });
 
 function preload() {
+   
+    //images for buttons
+    game.load.image('button', 'img/start-button.png');
+    game.load.image('background','img/starfield.jpg');
 
+    //images for car and bullet
     game.load.image('bullet', 'img/bullet.png');
-    game.load.image('ship', 'img/auto.png');
+    game.load.image('car', 'img/auto.png');
 
 }
-
+var button;
+var background;
 var sprite;
 var weapon;
 var cursors;
 var fireButton;
 
 function create() {
+  
+    // buttons
+    game.stage.backgroundColor = '#182d3b';
 
+    background = game.add.tileSprite(0, 0, 800, 600, 'background');
+
+    button = game.add.button(game.world.centerX -75, game.world.centerY -75 , 'button', actionOnClick, this, 2, 1, 0);
+    button.scale.setTo(0.25, 0.25);
+    
     //  Creates 30 bullets, using the 'bullet' graphic
     weapon = game.add.weapon(30, 'bullet');
 
@@ -32,8 +46,10 @@ function create() {
     //  Wrap bullets around the world bounds to the opposite side
     weapon.bulletWorldWrap = true;
 
-    sprite = this.add.sprite(400, 300, 'ship');
-
+    sprite = this.add.sprite(400, 300, 'car');
+    
+    // hide car
+    sprite.visible=false;
     sprite.anchor.set(0.5);
 
     game.physics.arcade.enable(sprite);
@@ -50,8 +66,17 @@ function create() {
 
     fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
+
 }
 
+
+function actionOnClick () {
+    
+    // show car
+    sprite.visible=true;
+   
+    button.destroy();
+}
 function update() {
 
     if (cursors.up.isDown)
