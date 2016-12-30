@@ -1,0 +1,22 @@
+{
+  "name": "phaser-prototype",
+  "version": "0.0.1",
+  "description": "Prototyping repo for getting started with phaser game development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arkint-co/Phaser-prototype.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Arkint-co/Phaser-prototype/issues"
+  },
+  "homepage": "https://github.com/Arkint-co/Phaser-prototype#readme",
+  "dependencies": {
+    "http-server": "^0.9.0"
+  }
+}
