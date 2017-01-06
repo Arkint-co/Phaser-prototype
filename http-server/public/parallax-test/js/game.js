@@ -25,6 +25,8 @@ var jumpButton;
 
 //this function is used to initialise base values
 function create() {
+
+    game.physics.startSystem(Phaser.Physics.ARCADE);
   
     game.stage.backgroundColor = '#182d3b';
 
@@ -34,15 +36,23 @@ function create() {
     background = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background');
 
 
-    game.physics.startSystem(Phaser.Physics.P2JS);
+    
 
     player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
+    game.physics.enable(player, Phaser.Physics.ARCADE);
 
-    game.physics.p2.enable(player);
-
-    player.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 10, true);
-    player.animations.add('turn', [11, 12, 13, 14, 15, 16, 17, 18, 19, 20], 10, true);
-    player.animations.add('right', [5, 6, 7, 8], 10, true);
+//add animations
+    //every 10 frames define a "move"
+    // 0-9 = idle
+    // 10-19 = gesture
+    // 20-29 = move
+    // 30-39 = attack
+    // 40-49 = jump
+    player.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], 10, true);
+    player.animations.add('gesture', [10, 11, 12, 13, 14, 15, 16, 17, 18, 19], 10, true);
+    player.animations.add('move', [20, 21, 22, 23, 24, 25, 26, 27, 28, 29], 10, true);
+    player.animations.add('attack', [30, 31, 32, 33, 34, 35, 36, 37, 38, 39], 10, true);
+    player.animations.add('jump', [40, 41, 42, 43, 44, 45, 46, 47, 48, 49], 10, true);
 
     cursors = this.input.keyboard.createCursorKeys();
 
@@ -53,7 +63,6 @@ function create() {
 //this is the game loop, this updates x-times a second
 function update() {
 
-    player.body.setZeroVelocity();
 
     //this makes it so the background moves slowly
     //background.tilePosition.x += 0.5;
@@ -84,7 +93,7 @@ function update() {
     {
         if (facing != 'idle')
         {
-            player.animations.stop();
+            player.animations.play('idle');
 
             if (facing == 'left')
             {
@@ -101,6 +110,7 @@ function update() {
     
     if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer)
     {
+        player.animations.play('jump');
         player.body.velocity.y = -250;
         jumpTimer = game.time.now + 750;
     }
