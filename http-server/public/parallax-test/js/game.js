@@ -22,6 +22,10 @@ var facing = 'left';
 var jumpTimer = 0;
 var cursors;
 var jumpButton;
+var floor; 
+var jumping;
+
+
 
 //this function is used to initialise base values
 function create() {
@@ -58,6 +62,10 @@ function create() {
 
     game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+    player.body.collideWorldBounds = true;
+    game.physics.arcade.gravity.y = 150;
+    player.body.gravity.y = 150;
 }
 
 //this is the game loop, this updates x-times a second
@@ -89,40 +97,40 @@ function update() {
             facing = 'right';
         }
     }
+    
+    else if (jumping == true && player.body.onFloor() ) {
+            facing = 'idle'
+            jumping = false 
+    }
     else
-    {
-        if (facing != 'idle')
+    { 
+        player.body.velocity.x = 0;
+        
+        if (facing == 'idle')
         {
             player.animations.play('idle');
-
-            if (facing == 'left')
-            {
-                player.frame = 0;
-            }
-            else
-            {
-                player.frame = 5;
-            }
-
-            facing = 'idle';
         }
     }
-    
-    if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer)
-    {
-        player.animations.play('jump');
-        player.body.velocity.y = -250;
-        jumpTimer = game.time.now + 750;
-    }
+    if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer) {
         
-
+        player.body.velocity.y = -250;
+       
+        if (facing != 'jump')
+        {
+            
+            player.animations.play('jump');
+            jumpTimer = game.time.now + 750;
+            facing = 'jump';
+            jumping = true; 
+        }
+    }
 }
 
 //an additional layer on top of the game, useful for debugging
 function render() {
 
     game.debug.cameraInfo(game.camera, 32, 32);
-
+    game.debug.text('local / 2',  32, 150);
 }
 
     };

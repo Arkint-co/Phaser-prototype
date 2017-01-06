@@ -12,6 +12,8 @@ function preload() {
     game.load.image('bullet', 'img/bullet.png');
     game.load.image('car', 'img/auto.png');
 
+    //images for rocks
+    game.load.spritesheet('invader', 'img/rock.jpg', 32, 32);
 }
 var button;
 var background;
@@ -66,7 +68,20 @@ function create() {
 
     fireButton = this.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
+     //  The scrolling starfield background
+    starfield = game.add.tileSprite(0, 0, 800, 600, 'background');
 
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+     //  The car
+    player = game.add.sprite(400, 500, 'car');
+    player.anchor.setTo(0.5, 0.5);
+    game.physics.enable(player, Phaser.Physics.ARCADE);
+
+    //  The rocks
+    aliens = game.add.group();
+    aliens.enableBody = true;
+    aliens.physicsBodyType = Phaser.Physics.ARCADE;
 }
 
 
