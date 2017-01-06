@@ -23,6 +23,10 @@ var cursors;
 var fireButton;
 
 function create() {
+
+    // Enable physics system
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
   
     // buttons
     game.stage.backgroundColor = '#182d3b';
@@ -92,6 +96,7 @@ function actionOnClick () {
    
     button.destroy();
 }
+
 function update() {
 
     if (cursors.up.isDown)
@@ -122,6 +127,8 @@ function update() {
     }
 
     game.world.wrap(sprite, 16);
+
+    game.physics.arcade.collide(weapon, bomb);
 
 }
 
