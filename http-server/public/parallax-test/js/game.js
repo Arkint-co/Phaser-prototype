@@ -19,7 +19,8 @@ function create() {
   
     game.stage.backgroundColor = '#182d3b';
 
-    background = game.add.tileSprite(0, 0, 800, 600, 'background');
+    //image is 800 by 600 but we use power of 2 to enable looping of tileSprite
+    background = game.add.tileSprite(0, 0, 800, 800, 'background');
 
     game.world.setBounds(0, 0, 1920, 600);
 
@@ -34,7 +35,6 @@ function create() {
     cursors = this.input.keyboard.createCursorKeys();
 
     game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
-
 
 }
 
