@@ -84,6 +84,9 @@ function create() {
     player.body.collideWorldBounds = true;
     game.physics.arcade.gravity.y = 150;
     player.body.gravity.y = 150;
+
+    //set "anchor" ot middle of body
+    player.anchor.setTo(.5, 1)
 }
 
 //this is the game loop, this updates x-times a second
@@ -92,10 +95,13 @@ function update() {
 
     //this makes it so the background moves slowly
     //background.tilePosition.x += 0.5;
-    background_layer4.tilePosition.x = -player.body.x*0.01;
-    background_layer3.tilePosition.x = -player.body.x*0.1;
-    background_layer2.tilePosition.x = -player.body.x*0.2;
-    background_layer1.tilePosition.x = -player.body.x*0;
+
+    // the background position is synched to the inverse player position * amount of movement
+    // smaller numbers mean less movement
+    background_layer4.tilePosition.x = -game.camera.x *0.01;
+    background_layer3.tilePosition.x = -game.camera.x *0.1;
+    background_layer2.tilePosition.x = -game.camera.x *0.2;
+    background_layer1.tilePosition.x = -game.camera.x *0;
     // if left button is down
     if (cursors.left.isDown)
     {
