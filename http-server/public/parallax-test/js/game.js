@@ -7,10 +7,13 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 function preload() {
    
     //background image
-    game.load.image('background','img/starfield.jpg');
+    game.load.image('background','img/PNG/Background.png');
 
     //player image
     game.load.spritesheet('player', 'img/snake_all.png', 32, 32);
+
+    // platform image
+    game.load.image('background','img/starfield.jpg');
 
 
 
@@ -18,13 +21,15 @@ function preload() {
 }
 var background;
 var player;
-var facing = 'left';
+var facing = 'idle';
 var jumpTimer = 0;
+var attackTimer = 0;
 var cursors;
 var jumpButton;
 var floor; 
 var jumping;
-
+var platform;
+var attacking = 1;
 
 
 //this function is used to initialise base values
@@ -38,6 +43,8 @@ function create() {
 
     //image is 800 by 600 but we use power of 2 to enable looping of tileSprite
     background = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background');
+
+    background.smoothed = false;
 
 
     
@@ -62,6 +69,7 @@ function create() {
 
     game.camera.follow(player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
     jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    attackButton = game.input.keyboard.addKey(Phaser.Keyboard.F);
 
     player.body.collideWorldBounds = true;
     game.physics.arcade.gravity.y = 150;
@@ -75,14 +83,21 @@ function update() {
     //this makes it so the background moves slowly
     //background.tilePosition.x += 0.5;
 
+
+    // if left button is down
     if (cursors.left.isDown)
     {
+        // set velocity to negative value (so the physics will move to left) 
         player.body.velocity.x = -150;
 
+        // if the player is not yet facing left
         if (facing != 'left')
         {
-            player.scale.x =1;
+            // invert sprite (mirror)
+            player.scale.x = 1;
+            // start the 'move' animation
             player.animations.play('move');
+            // set facing to left so this condition does not get triggered constantly
             facing = 'left';
         }
     }
@@ -97,31 +112,56 @@ function update() {
             facing = 'right';
         }
     }
-    
+    // if player has started jumping and landed (a.k.a. jump has ended) set jumping back to false
     else if (jumping == true && player.body.onFloor() ) {
-            facing = 'idle'
+            facing = 'idle';
             jumping = false 
     }
+    // in all other cases
     else
     { 
+        // because jumping is seperate from this if/else we need to test for it here
+        // if not jumping, then it must be idle (because this is the else statement for movement)
+        if (facing != 'jump' && facing != 'attack'){
+            facing = 'idle';
+        }
+        //set velocity to 0 so it stops moving
         player.body.velocity.x = 0;
         
         if (facing == 'idle')
         {
             player.animations.play('idle');
         }
+        if (attacking > 1){
+            attacking = 0;
+        }
     }
+
+    // seperate from above if/else statements because you can do it simultaneously e.g. you can jump while moving right
     if (jumpButton.isDown && player.body.onFloor() && game.time.now > jumpTimer) {
         
+        // set y velocity to negative value to move player up
         player.body.velocity.y = -250;
        
         if (facing != 'jump')
         {
-            
             player.animations.play('jump');
             jumpTimer = game.time.now + 750;
             facing = 'jump';
             jumping = true; 
+        }
+    }
+    // seperate from above if/else statements because you can do it simultaneously e.g. you can attack while moving right
+    if (attackButton.isDown && game.time.now > attackTimer) {
+        
+        // do something
+       
+        if (facing != 'attack' && attacking == 1)
+        {
+            player.animations.play('attack');
+            attackTimer = game.time.now + 250;
+            facing = 'attack';
+            attacking;
         }
     }
 }
