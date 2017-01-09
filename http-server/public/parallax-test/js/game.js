@@ -7,9 +7,9 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 function preload() {
    
     //background image
-    game.load.image('background','img/PNG/Background.png');
+    game.load.image('background','img/PNG/background_small.png');
 
-    //player image
+    //player image, the 32, 32 determine the width and height of each sprite
     game.load.spritesheet('player', 'img/snake_all.png', 32, 32);
 
     // platform image
@@ -44,16 +44,13 @@ function create() {
     //image is 800 by 600 but we use power of 2 to enable looping of tileSprite
     background = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background');
 
-    background.smoothed = false;
-
-
     
 
     player = game.add.sprite(game.world.centerX, game.world.centerY, 'player');
     game.physics.enable(player, Phaser.Physics.ARCADE);
 
 //add animations
-    //every 10 frames define a "move"
+    //every 10 frames define a "move", the 10 after that means the duration of the aniamtion, true just means it will keep looping
     // 0-9 = idle
     // 10-19 = gesture
     // 20-29 = move
@@ -121,7 +118,7 @@ function update() {
     else
     { 
         // because jumping is seperate from this if/else we need to test for it here
-        // if not jumping, then it must be idle (because this is the else statement for movement)
+        // if not jumping or attacking, then it must be idle (because this is the only other statement for movement)
         if (facing != 'jump' && facing != 'attack'){
             facing = 'idle';
         }
@@ -131,9 +128,6 @@ function update() {
         if (facing == 'idle')
         {
             player.animations.play('idle');
-        }
-        if (attacking > 1){
-            attacking = 0;
         }
     }
 
@@ -159,10 +153,17 @@ function update() {
         if (facing != 'attack' && attacking == 1)
         {
             player.animations.play('attack');
-            attackTimer = game.time.now + 250;
+            // the timer determines for how long the animation will play, 1000 == 1 second
+            attackTimer = game.time.now + 1000;
             facing = 'attack';
-            attacking;
+            // increase attacking so it's no longer 1
+            attacking++;
         }
+    }
+    // the state of attack and timer determinen when the animation is over, if so, the state will be set to idle
+    if(attacking>1 && game.time.now > attackTimer){
+        facing = 'idle';
+        attacking = 1;
     }
 }
 
