@@ -6,8 +6,12 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload:
 //this function is used to load images etc before doing something with them
 function preload() {
    
-    //background image
-    game.load.image('background','img/PNG/background_small.png');
+    //load background layers
+    game.load.image('background_back','img/background_back.png');
+    game.load.image('background_layer1','img/background_layer1.png');
+    game.load.image('background_layer2','img/background_layer2.png');
+    game.load.image('background_layer3','img/background_layer3.png');
+    game.load.image('background_layer4','img/background_layer4.png');
 
     //player image, the 32, 32 determine the width and height of each sprite
     game.load.spritesheet('player', 'img/snake_all.png', 32, 32);
@@ -37,12 +41,21 @@ function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
   
-    game.stage.backgroundColor = '#182d3b';
+    //game.stage.backgroundColor = '#182d3b';
 
         game.world.setBounds(0, 0, 1920, 600);
 
     //image is 800 by 600 but we use power of 2 to enable looping of tileSprite
-    background = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background');
+    //order in which these are loaded are important!
+    background_back = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background_back');
+    background_layer4 = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background_layer4');
+    background_layer3 = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background_layer3');
+    background_layer2 = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background_layer2');
+    background_layer1 = game.add.tileSprite(0, 0, game.world.width, game.world.height, 'background_layer1');
+
+
+
+
 
     
 
@@ -79,8 +92,10 @@ function update() {
 
     //this makes it so the background moves slowly
     //background.tilePosition.x += 0.5;
-
-
+    background_layer4.tilePosition.x = -player.body.x*0.01;
+    background_layer3.tilePosition.x = -player.body.x*0.1;
+    background_layer2.tilePosition.x = -player.body.x*0.2;
+    background_layer1.tilePosition.x = -player.body.x*0;
     // if left button is down
     if (cursors.left.isDown)
     {
